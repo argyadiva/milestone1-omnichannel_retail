@@ -254,16 +254,12 @@ berikut di terminal PowerShell pertama:
 
 ```powershell
 uv sync
-$env:ANALYTICS_DB_TARGET = "neon"
-$env:NL2SQL_PROVIDER = "openai"
-$env:OPENAI_API_KEY = "isi_api_key_di_environment_lokal"
-uv run uvicorn engine.api.main:app --reload --port 8000
+uv run python -m uvicorn engine.api.main:app --port 8000
 ```
 
 Pada terminal kedua, jalankan UI:
 
 ```powershell
-$env:ENGINE_URL = "http://localhost:8000"
 uv run python -m streamlit run ui/app.py --server.port 8501
 ```
 

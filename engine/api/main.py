@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
@@ -14,6 +16,7 @@ from engine.sql.safety import UnsafeQueryError
 
 app = FastAPI(title="Omnichannel Retail Analytics Engine", version="2.0.0")
 provider = build_provider()
+logger = logging.getLogger(__name__)
 
 
 class QueryRequest(BaseModel):
@@ -47,6 +50,7 @@ def analyze_question(request: AnalysisRequest) -> AnalysisResponse:
     except (UnsafeQueryError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:  # Keep provider/database details out of the HTTP response.
+        logger.exception("Analytics analysis failed")
         raise HTTPException(status_code=503, detail="Analysis failed") from exc
 
 
@@ -59,5 +63,6 @@ def query(request: QueryRequest) -> QueryResponse:
     except (UnsafeQueryError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:  # API boundary converts operational failures to a stable response.
+        logger.exception("Legacy analytics query failed")
         raise HTTPException(status_code=503, detail="Query execution failed") from exc
     return QueryResponse(**result.__dict__)

@@ -14,7 +14,7 @@ uv sync
 Start the engine first:
 
 ```powershell
-uv run uvicorn engine.api.main:app --reload --port 8000
+uv run python -m uvicorn engine.api.main:app --reload --port 8000
 ```
 
 Then start the UI in another terminal:

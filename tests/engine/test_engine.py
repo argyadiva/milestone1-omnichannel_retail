@@ -50,3 +50,10 @@ def test_service_returns_structured_result_without_database():
     )
     assert result.tables_used == ["gold.order_360"]
     assert result.rows[0]["sales_channel"] == "WEB"
+
+
+def test_engine_database_access_does_not_depend_on_pipeline_package():
+    engine_root = Path(__file__).parents[2] / "engine"
+    for source_path in engine_root.rglob("*.py"):
+        source = source_path.read_text(encoding="utf-8")
+        assert "pipelines.ingestion.db" not in source

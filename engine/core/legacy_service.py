@@ -22,7 +22,7 @@ class QueryResult:
 
 
 def execute_postgres(sql: str, max_rows: int) -> tuple[list[str], list[dict[str, Any]]]:
-    from pipelines.ingestion.db import connect
+    from shared.db import connect
 
     wrapped = f"SELECT * FROM ({sql}) AS nl2sql_result LIMIT {max_rows}"
     with connect() as connection:

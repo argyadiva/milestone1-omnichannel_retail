@@ -34,3 +34,10 @@ The engine database profile is selected with `ANALYTICS_DB_TARGET`. It
 defaults to `neon`, where only the small Gold demo sample is published. Set
 `ANALYTICS_DB_TARGET=local` when demonstrating a participant-built local Gold
 layer. Bronze and Silver are never queried by the engine.
+
+Database connectivity is implemented in `shared/db.py`, a neutral module
+shared by the engine and pipeline infrastructure. The engine does not import
+participant transformations or execute the Bronze, Silver, or Gold pipeline.
+The connection helper uses the pure-Python `pg8000` driver, which keeps the
+local demo compatible with Windows Application Control policies that block
+native PostgreSQL DLLs.

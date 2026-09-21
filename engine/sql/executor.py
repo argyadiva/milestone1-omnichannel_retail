@@ -13,7 +13,7 @@ from decimal import Decimal
 from time import perf_counter
 from typing import Any
 
-from pipelines.ingestion.db import connect
+from shared.db import connect
 
 
 @dataclass(frozen=True)
