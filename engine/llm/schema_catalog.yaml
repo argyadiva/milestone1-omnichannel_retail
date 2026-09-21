@@ -1,0 +1,26 @@
+version: 1
+policy:
+  allowed_schemas:
+    - gold
+  allowed_operation: SELECT
+tables:
+  gold.order_360:
+    grain: one resolved order
+    key: order_id
+    columns: [order_id, customer_id, order_date, sales_channel, store_id, gross_merchandise_value, discount_amount, shipping_revenue, captured_payment_amount, refunded_amount, net_revenue, item_count, unit_quantity, order_status, payment_status, return_status, promotion_count, first_order_flag, pipeline_run_id]
+  gold.customer_daily:
+    grain: one customer per business date
+    key: [customer_id, metric_date]
+    columns: [customer_id, metric_date, order_count, unit_quantity, gross_revenue, net_revenue, refund_amount, return_count, support_contacts, active_channel, new_customer_flag, repeat_customer_flag, pipeline_run_id]
+  gold.product_daily:
+    grain: one product per business date
+    key: [product_id, metric_date]
+    columns: [product_id, metric_date, active_category, units_sold, order_count, gross_revenue, net_revenue, refunded_units, available_inventory, reserved_inventory, stockout_flag, promotion_count, pipeline_run_id]
+  gold.channel_campaign_daily:
+    grain: one date, sales channel, and campaign
+    key: [metric_date, sales_channel, campaign_id]
+    columns: [metric_date, sales_channel, campaign_id, campaign_spend, attributed_orders, attributed_customers, gross_revenue, net_revenue, refunds, roas, conversion_rate, pipeline_run_id]
+  gold.executive_kpis_daily:
+    grain: one business date
+    key: metric_date
+    columns: [metric_date, total_orders, gross_revenue, net_revenue, average_order_value, refund_rate, return_rate, repeat_customer_rate, stockout_rate, active_customers, support_contact_rate, data_freshness_utc, pipeline_run_id]

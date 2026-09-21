@@ -1,0 +1,11 @@
+__pycache__/
+.pytest_cache/
+.pytest-basetemp/
+.ruff_cache/
+.venv/
+.env
+data/raw/*
+!data/raw/.gitkeep
+data/generated/*
+*.pyc
+.env

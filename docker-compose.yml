@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: retail_analytics
+      POSTGRES_USER: retail
+      POSTGRES_PASSWORD: retail
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U retail -d retail_analytics"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - retail_postgres_data:/var/lib/postgresql/data
+
+  nl2sql-api:
+    build: .
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: retail_analytics
+      POSTGRES_USER: retail
+      POSTGRES_PASSWORD: retail
+      ANALYTICS_DB_TARGET: local
+      LOCAL_POSTGRES_HOST: postgres
+      LOCAL_POSTGRES_PORT: 5432
+      LOCAL_POSTGRES_DB: retail_analytics
+      LOCAL_POSTGRES_USER: retail
+      LOCAL_POSTGRES_PASSWORD: retail
+      NL2SQL_PROVIDER: mock
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+
+  analytics-ui:
+    build: .
+    environment:
+      ENGINE_URL: http://nl2sql-api:8000
+    command: ["streamlit", "run", "ui/app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]
+    ports:
+      - "8501:8501"
+    depends_on:
+      - nl2sql-api
+    volumes:
+      - ./:/app
+
+volumes:
+  retail_postgres_data:
